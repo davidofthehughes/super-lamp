@@ -4,12 +4,11 @@
 
 #>
 
-$ScriptPath = "C:\Scripts\Powershell\TSM"
-$SchedUser  = ""
-$SchedPass  = ""
+$ScriptPath = "C:\Scripts\Powershell"
+
 $SchedTaskPath = "\UCL"
-$SchedTaskName = "TSMVE DM Service Check"
-$SchedTaskDesc = "Check the TSMVE DataMovers for stuck Scheduler services"
+$SchedTaskName = "Change this for task name"
+$SchedTaskDesc = "Change this for a decent description of what the task does"
 
 $cred = Get-Credential -Message "Enter credentials to run service as (USE A SERVICE ACCOUNT!!)"
 
@@ -17,7 +16,7 @@ $SchedUser = $cred.UserName
 $SchedPass = $cred.GetNetworkCredential().Password    # Get the actual password string
 
 $action    = New-ScheduledTaskAction -Execute 'Powershell.exe' `
-  -Argument '-ExecutionPolicy Bypass C:\Scripts\Powershell\TSM\RestartScheduler.ps1'
+  -Argument '-ExecutionPolicy Bypass C:\put\full\path\to\the\script\here'
 
 $trigger   = New-ScheduledTaskTrigger -Daily -At 9am
 
@@ -39,6 +38,9 @@ catch {
 }
 
 # If we are here then the task registered succesfully
-$schedtask.Triggers.Repetition.Duration = "P1D"   #//Repeat for a duration of one day
-$schedtask.Triggers.Repetition.Interval = "PT30M" #//Repeat every 30 minutes, use PT1H for every hour
+# I need to attribute the person i took this from ...
+$schedtask.Triggers.Repetition.Duration = "P1D"   # -- Repeat for a duration of one day
+$schedtask.Triggers.Repetition.Interval = "PT30M" # -- Repeat every 30 minutes, 
+                                                  # -- use PT1H for every hour
+
 $schedtask | Set-ScheduledTask -User $SchedUser -Password $SchedPass
